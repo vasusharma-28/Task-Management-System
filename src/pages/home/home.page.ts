@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import { KeyValuePipe } from '@angular/common';
+import { TmsService } from '../../services/tms.service';
 
 @Component({
   selector: 'tms-home',
@@ -32,30 +33,39 @@ import { KeyValuePipe } from '@angular/common';
 export class HomePageComponent {
   @ViewChild('newTask')
   newTaskRef = ElementRef<any>;
-
+  taskListMap = new Map<string, Task>();
   private readonly _dialog = inject(MatDialog);
+  private readonly _tmsService = inject(TmsService);
   private _dialogRef: MatDialogRef<any> | null = null;
   readonly priorities = ['Low', 'Medium', 'High'];
 
-  taskList: Task[] = [
-    {
-      id: uuidv4(),
-      title: 'Yoga session',
-      priority: 'High',
-    },
-    {
-      id: uuidv4(),
-      title: 'All hands meeting',
-      priority: 'Medium',
-    },
-    {
-      id: uuidv4(),
-      title: 'Dentist appointment',
-      priority: 'High',
-    },
-  ];
+  // taskList: Task[] = [
+  //   {
+  //     id: uuidv4(),
+  //     title: 'Yoga session',
+  //     priority: 'High',
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     title: 'All hands meeting',
+  //     priority: 'Medium',
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     title: 'Dentist appointment',
+  //     priority: 'High',
+  //   },
+  // ];
 
-  taskListMap = new Map(this.taskList.map((task) => [task.id, task]));
+
+  ngOnInit() {
+    this._tmsService.getAllTasks().subscribe({
+      next: (res: Task[]) => {
+        console.log(res);
+        res?.map((task: any) => this.taskListMap.set(task.id as string, task));
+      },
+    });
+  }
 
   openTaskModel() {
     this._dialogRef = this._dialog.open(this.newTaskRef);
@@ -63,12 +73,26 @@ export class HomePageComponent {
 
   addNewTask(taskForm: any) {
     console.log(taskForm.value);
-    this.taskListMap.set(uuidv4(), taskForm.value);
-    this._dialogRef?.close();
+    const taskPayload = {
+      ...taskForm.value,
+      id: uuidv4(),
+    };
+    this._tmsService.addTask(taskPayload).subscribe({
+      next: (res: Task[]) => {
+        if (res?.length) {
+          this.taskListMap.set(uuidv4(), taskForm.value);
+          this._dialogRef?.close();
+        }
+      },
+    });
   }
 
-  deleteTask(taskId: number | string) {
-    this.taskListMap.delete(taskId);
+  deleteTask(taskId: string | number) {
+    this._tmsService.deleteTask(taskId as string).subscribe({
+      next: (_) => {
+        this.taskListMap.delete(taskId as string);
+      },
+    });
   }
 
   closeModel() {
