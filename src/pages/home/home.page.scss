@@ -1,0 +1,35 @@
+.add-task {
+  width: 40px;
+  height: 40px;
+}
+
+.delete-icon {
+  cursor: pointer;
+  float: right;
+  &:hover {
+    color: black;
+  }
+}
+.task-model {
+  width: 450px;
+  height: 300px;
+  padding: 1em;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    .buttons {
+      flex: 2;
+      display: flex;
+      justify-content: end;
+      align-items: end;
+      gap: 1em;
+    }
+  }
+
+  .priority {
+    display: flex;
+    flex-direction: column;
+  }
+}

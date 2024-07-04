@@ -1,0 +1,68 @@
+<mat-toolbar color="primary">
+  <span style="flex: 1">TMS</span>
+
+  <button
+    mat-fab
+    class="add-task"
+    aria-label="Example icon-button with menu icon"
+    (click)="openTaskModel()"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="home-body">
+  <mat-list>
+    @for(task of taskListMap | keyvalue; track task.key) {
+    <mat-list-item>
+      <div matListItemTitle>{{task.value.title}}</div>
+      <div matListItemLine>{{task.value.priority}}</div>
+      <mat-icon class="delete-icon" matListIcon (click)="deleteTask(task.key)"
+        >delete</mat-icon
+      >
+    </mat-list-item>
+
+    <mat-divider></mat-divider>
+    }
+  </mat-list>
+</div>
+
+<ng-template #newTask>
+  <div class="task-model">
+    <form (ngSubmit)="addNewTask(newTaskForm)" #newTaskForm="ngForm">
+      <mat-form-field>
+        <mat-label>Task</mat-label>
+        <input
+          required
+          type="text"
+          matInput
+          placeholder="Any task"
+          name="title"
+          ngModel
+        />
+      </mat-form-field>
+
+      <div class="priority">
+        <mat-label>Priority</mat-label>
+        <mat-radio-group required ngModel name="priority">
+          @for (priority of priorities; track priority) {
+          <mat-radio-button [value]="priority">{{priority}}</mat-radio-button>
+          }
+        </mat-radio-group>
+      </div>
+      <div class="buttons">
+        <button mat-raised-button type="reset" (click)="closeModel()">
+          Cancel
+        </button>
+        <button
+          mat-raised-button
+          type="submit"
+          color="primary"
+          [disabled]="!newTaskForm.valid"
+        >
+          Add Task
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
