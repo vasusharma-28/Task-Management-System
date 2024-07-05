@@ -103,7 +103,7 @@ export class HomePageComponent {
 
   logout() {
     this._authService.logoutRedirect({
-      postLogoutRedirectUri: 'http://localhost:4200',
+      postLogoutRedirectUri: '/',
     });
   }
 }
