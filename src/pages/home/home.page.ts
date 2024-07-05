@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { v4 as uuidv4 } from 'uuid';
 import { KeyValuePipe } from '@angular/common';
 import { TmsService } from '../../services/tms.service';
+import { MsalService } from '@azure/msal-angular';
 
 @Component({
   selector: 'tms-home',
@@ -35,6 +36,7 @@ export class HomePageComponent {
   newTaskRef = ElementRef<any>;
   taskListMap = new Map<string, Task>();
   private readonly _dialog = inject(MatDialog);
+  private readonly _authService = inject(MsalService);
   private readonly _tmsService = inject(TmsService);
   private _dialogRef: MatDialogRef<any> | null = null;
   readonly priorities = ['Low', 'Medium', 'High'];
@@ -57,7 +59,6 @@ export class HomePageComponent {
   //   },
   // ];
 
-
   ngOnInit() {
     this._tmsService.getAllTasks().subscribe({
       next: (res: Task[]) => {
@@ -77,7 +78,7 @@ export class HomePageComponent {
       ...taskForm.value,
       id: uuidv4(),
     };
-    
+
     this._tmsService.addTask(taskPayload).subscribe({
       next: (res: Task[]) => {
         if (res?.length) {
@@ -98,5 +99,11 @@ export class HomePageComponent {
 
   closeModel() {
     this._dialogRef?.close();
+  }
+
+  logout() {
+    this._authService.logoutRedirect({
+      postLogoutRedirectUri: 'http://localhost:4200',
+    });
   }
 }
