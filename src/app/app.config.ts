@@ -21,6 +21,7 @@ import {
   MSAL_INTERCEPTOR_CONFIG,
   MsalService,
   MsalGuard,
+  MsalBroadcastService,
 } from '@azure/msal-angular';
 export function loggerCallback(logLevel: LogLevel, message: string) {
   console.log(message);
@@ -95,5 +96,6 @@ export const appConfig: ApplicationConfig = {
     },
     MsalService,
     MsalGuard,
+    MsalBroadcastService,
   ],
 };
