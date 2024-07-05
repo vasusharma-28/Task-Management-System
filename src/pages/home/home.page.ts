@@ -74,15 +74,18 @@ export class HomePageComponent {
 
   addNewTask(taskForm: any) {
     console.log(taskForm.value);
+
+    const newTaskId = uuidv4();
+    
     const taskPayload = {
       ...taskForm.value,
-      id: uuidv4(),
+      id: newTaskId,
     };
 
     this._tmsService.addTask(taskPayload).subscribe({
       next: (res: Task[]) => {
         if (res?.length) {
-          this.taskListMap.set(uuidv4(), taskForm.value);
+          this.taskListMap.set(newTaskId, taskForm.value);
           this._dialogRef?.close();
         }
       },
