@@ -77,6 +77,7 @@ export class HomePageComponent {
       ...taskForm.value,
       id: uuidv4(),
     };
+    
     this._tmsService.addTask(taskPayload).subscribe({
       next: (res: Task[]) => {
         if (res?.length) {
